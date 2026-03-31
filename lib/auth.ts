@@ -38,6 +38,7 @@ const findSessionStatement = db.prepare(`
     users.id,
     users.name,
     users.email,
+    users.created_at AS createdAt,
     sessions.id AS sessionId,
     sessions.expires_at AS expiresAt
   FROM sessions
