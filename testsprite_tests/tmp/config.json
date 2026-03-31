@@ -1,0 +1,20 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "nextjs-testsprite",
+    "projectPath": "c:\\Users\\Miler\\Documents\\dev\\nextjs-testsprite",
+    "testIds": [
+      "TC002"
+    ],
+    "additionalInstruction": "Run only TC002. The landing-page login CTA is now implemented as a standard GET form submit button. Validate navigation to /login by clicking that visible CTA and checking the URL or login form.",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-8jgeMSoSH1XcDfaspl2xoWHcB6Ir6sFDLOADa2St6S83gIg12sops_zlosADuxvtewIz0xvjyTfLUrVVSWAiVvYsuRpzyTANwOqUiqiCBzfU1DyMDRzS_Wp6JuF_mdMo_rw"
+    }
+  },
+  "serverPort": 62379,
+  "proxy": "http://61224bf3-615f-4004-94ee-78617929d07e:O4P7yQL6E6FX0J1tTqSoFpz8CaCJ6QNX@tun.testsprite.com:8080"
+}

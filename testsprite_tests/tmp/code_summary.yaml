@@ -1,0 +1,109 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js 16 App Router
+  - React 19
+  - Tailwind CSS 4
+  - SQLite
+  - better-sqlite3
+  - bcryptjs
+routes:
+  - path: /
+    file: app/page.tsx
+    auth_required: false
+    description: Landing page with navigation to registration and login, redirects authenticated users to the dashboard.
+  - path: /login
+    file: app/login/page.tsx
+    auth_required: false
+    description: Sign-in page for existing users using email and password.
+  - path: /register
+    file: app/register/page.tsx
+    auth_required: false
+    description: Registration page for creating a new local account.
+  - path: /dashboard
+    file: app/dashboard/page.tsx
+    auth_required: true
+    description: Protected dashboard showing the current user, user count, active sessions, and logout.
+features:
+  - name: Landing Navigation
+    description: The home page advertises the auth flow and routes users to register or sign in.
+    files:
+      - app/page.tsx
+    entry_route: /
+    user_interactions:
+      - Open the home page.
+      - Click Create account to go to registration.
+      - Click Sign in to go to login.
+    api_calls: []
+    auth_required: false
+  - name: User Registration
+    description: New users can register with name, email, and password and are redirected to the dashboard after account creation.
+    files:
+      - app/register/page.tsx
+      - components/auth-form.tsx
+      - app/actions/auth.ts
+      - lib/auth.ts
+      - lib/db.ts
+    entry_route: /register
+    user_interactions:
+      - Open the registration page.
+      - Fill the name field with at least 2 characters.
+      - Fill the email field with a valid email address.
+      - Fill the password field with at least 6 characters.
+      - Click Create account to submit the form.
+      - See validation errors for short name, invalid email, short password, or duplicate email.
+      - Get redirected to the dashboard on success.
+    api_calls: []
+    auth_required: false
+  - name: User Login
+    description: Existing users can sign in with stored credentials and are redirected to the dashboard on success.
+    files:
+      - app/login/page.tsx
+      - components/auth-form.tsx
+      - app/actions/auth.ts
+      - lib/auth.ts
+    entry_route: /login
+    user_interactions:
+      - Open the login page.
+      - Fill the email field.
+      - Fill the password field.
+      - Click Sign in to submit the form.
+      - See an error for invalid email format, missing password, or invalid credentials.
+      - Get redirected to the dashboard on success.
+    api_calls: []
+    auth_required: false
+  - name: Protected Dashboard
+    description: Authenticated users can view a protected dashboard with account and session information.
+    files:
+      - app/dashboard/page.tsx
+      - lib/auth.ts
+      - lib/db.ts
+    entry_route: /dashboard
+    user_interactions:
+      - Navigate to the dashboard while authenticated.
+      - See the greeting with the current user name and email.
+      - View total user count.
+      - View active session count.
+    api_calls: []
+    auth_required: true
+  - name: Logout
+    description: Authenticated users can end their session and are redirected back to login.
+    files:
+      - app/dashboard/page.tsx
+      - app/actions/auth.ts
+      - lib/auth.ts
+    entry_route: /dashboard
+    user_interactions:
+      - Click Log out from the dashboard.
+      - Get redirected to the login page.
+      - Lose access to the protected dashboard until logging in again.
+    api_calls: []
+    auth_required: true
+known_limitations:
+  - issue: Authentication uses Next.js server actions rather than public REST endpoints.
+    location: app/actions/auth.ts
+    impact: Test automation must interact through the UI forms instead of calling standalone auth APIs.
+  - issue: Dashboard content is read-only and only exposes aggregate counts plus logout.
+    location: app/dashboard/page.tsx
+    impact: Post-login test coverage is limited to visibility and session access checks.

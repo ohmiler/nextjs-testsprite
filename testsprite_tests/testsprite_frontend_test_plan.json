@@ -1,0 +1,486 @@
+[
+  {
+    "id": "TC001",
+    "title": "Navigate from landing page to registration",
+    "description": "Verifies an unauthenticated user can reach the registration page from the landing page.",
+    "category": "Landing Navigation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the create-account call to action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the registration page is displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Navigate from landing page to login",
+    "description": "Verifies an unauthenticated user can reach the login page from the landing page.",
+    "category": "Landing Navigation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the sign-in call to action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the login page is displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Authenticated user is redirected from landing page to dashboard",
+    "description": "Verifies that an authenticated user visiting the landing page is redirected to the protected dashboard.",
+    "category": "Landing Navigation",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Register a new user successfully and reach dashboard",
+    "description": "Verifies a user can create a new account with valid inputs and is redirected to the dashboard.",
+    "category": "User Registration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill Test User into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique valid email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid password with at least 6 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Registration validation: short name is rejected",
+    "description": "Verifies registration shows a validation error when the name is shorter than the minimum length.",
+    "category": "User Registration",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill A into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique valid email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid password with at least 6 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a name validation error is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Registration validation: invalid email format is rejected",
+    "description": "Verifies registration shows a validation error when the email format is invalid.",
+    "category": "User Registration",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill Valid Name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill invalid-email-format into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid password with at least 6 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an email validation error is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Registration validation: short password is rejected",
+    "description": "Verifies registration shows a validation error when the password is shorter than the minimum length.",
+    "category": "User Registration",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /register"
+      },
+      {
+        "type": "action",
+        "description": "Fill Valid Name into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a unique valid email into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a password shorter than 6 characters into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password validation error is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Login successfully and reach dashboard",
+    "description": "Verifies an existing user can sign in with valid credentials and is redirected to the dashboard.",
+    "category": "User Login",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Login validation: invalid email format is rejected",
+    "description": "Verifies login shows a validation error when the email format is invalid.",
+    "category": "User Login",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill invalid-email-format into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill any valid-looking password into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an email validation error is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Login validation: missing password is rejected",
+    "description": "Verifies login shows a validation error when the password is missing.",
+    "category": "User Login",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill nothing into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password required validation error is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Protected dashboard loads for authenticated user and shows primary account and counts content",
+    "description": "Verifies an authenticated user can access the dashboard and see identity plus aggregate counts.",
+    "category": "Protected Dashboard",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard greeting shows the current user's name and email"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify total user count and active session count are displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Unauthenticated access to dashboard redirects to login",
+    "description": "Verifies the protected dashboard cannot be accessed when not signed in and redirects to login.",
+    "category": "Protected Dashboard",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the login page"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Dashboard access remains stable after refresh-like revisit",
+    "description": "Verifies the authenticated user can revisit the dashboard route and still see the primary dashboard content.",
+    "category": "Protected Dashboard",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard greeting shows the current user's name and email"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify total user count and active session count are displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Logout ends session and redirects to login",
+    "description": "Verifies a signed-in user can log out from the dashboard and is returned to login.",
+    "category": "Logout",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Trigger the logout action"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the login page"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "After logout, dashboard is no longer accessible and redirects to login",
+    "description": "Verifies logout prevents further access to the protected dashboard until re-authentication.",
+    "category": "Logout",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Trigger the logout action"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the login page"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Unauthenticated users cannot use logout flow because dashboard is blocked",
+    "description": "Verifies users who are not authenticated are redirected to login when attempting to reach the dashboard entry point for logout.",
+    "category": "Logout",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the login page"
+      }
+    ]
+  }
+]

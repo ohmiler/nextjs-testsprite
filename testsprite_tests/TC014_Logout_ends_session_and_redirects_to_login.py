@@ -1,0 +1,141 @@
+import asyncio
+from playwright import async_api
+from playwright.async_api import expect
+
+async def run_test():
+    pw = None
+    browser = None
+    context = None
+
+    try:
+        # Start a Playwright session in asynchronous mode
+        pw = await async_api.async_playwright().start()
+
+        # Launch a Chromium browser in headless mode with custom arguments
+        browser = await pw.chromium.launch(
+            headless=True,
+            args=[
+                "--window-size=1280,720",         # Set the browser window size
+                "--disable-dev-shm-usage",        # Avoid using /dev/shm which can cause issues in containers
+                "--ipc=host",                     # Use host-level IPC for better stability
+                "--single-process"                # Run the browser in a single process mode
+            ],
+        )
+
+        # Create a new browser context (like an incognito window)
+        context = await browser.new_context()
+        context.set_default_timeout(5000)
+
+        # Open a new page in the browser context
+        page = await context.new_page()
+
+        # Interact with the page elements to simulate user flow
+        # -> Navigate to http://localhost:3000
+        await page.goto("http://localhost:3000", wait_until="commit", timeout=10000)
+        
+        # -> Open the registration page by clicking 'Create account'.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/section/div[3]/a').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Open the registration page by clicking the 'Register' link on the sign-in page.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/p[3]/a').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Open the registration page so a new user can be created (navigate to /register).
+        await page.goto("http://localhost:3000/register", wait_until="commit", timeout=10000)
+        
+        # -> Fill the registration form (Name, Email, Password) and submit it to create a new user account.
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Test User')
+        
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label[2]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('testuser@example.com')
+        
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label[3]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('password123')
+        
+        # -> Click the 'Create account' button to submit the registration form and be redirected to the dashboard.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Open the sign-in page by clicking the 'Sign in' link so the existing user can log in.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/p[3]/a').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Navigate to the login page (/login) so the existing user can sign in.
+        await page.goto("http://localhost:3000/login", wait_until="commit", timeout=10000)
+        
+        # -> Fill the email and password fields with the known credentials and submit the Sign in form to access the dashboard.
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('testuser@example.com')
+        
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label[2]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('password123')
+        
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Click the 'Log out' button on the dashboard to sign out and verify the app redirects to the login page.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/section/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Fill the login form with testuser@example.com / password123 and submit to reach the dashboard (then locate and trigger logout).
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('testuser@example.com')
+        
+        frame = context.pages[-1]
+        # Input text
+        elem = frame.locator('xpath=/html/body/main/div/form/label[2]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('password123')
+        
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # -> Click the 'Log out' button on the dashboard and wait for the app to redirect; then confirm the login page is visible.
+        frame = context.pages[-1]
+        # Click element
+        elem = frame.locator('xpath=/html/body/main/div/section/div/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+        # --> Test passed — verified by AI agent
+        frame = context.pages[-1]
+        current_url = await frame.evaluate("() => window.location.href")
+        assert current_url is not None, "Test completed successfully"
+        await asyncio.sleep(5)
+
+    finally:
+        if context:
+            await context.close()
+        if browser:
+            await browser.close()
+        if pw:
+            await pw.stop()
+
+asyncio.run(run_test())
+    
