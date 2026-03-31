@@ -6,6 +6,13 @@ type CountRow = {
   count: number;
 };
 
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
 export default async function DashboardPage() {
   const user = await requireUser();
 
@@ -44,7 +51,7 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-3">
           <article className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[var(--shadow)]">
             <p className="text-sm font-medium tracking-[0.16em] text-amber-700 uppercase">Users</p>
             <p className="mt-4 text-4xl font-semibold text-stone-950">{userCount}</p>
@@ -55,6 +62,20 @@ export default async function DashboardPage() {
             <p className="text-sm font-medium tracking-[0.16em] text-amber-300 uppercase">Active sessions</p>
             <p className="mt-4 text-4xl font-semibold">{activeSessions}</p>
             <p className="mt-2 text-sm leading-7 text-stone-200">Session records that are still valid and can access protected routes.</p>
+          </article>
+
+          <article className="rounded-[1.75rem] border border-[var(--border)] bg-white/85 p-6 shadow-[var(--shadow)]">
+            <p className="text-sm font-medium tracking-[0.16em] text-amber-700 uppercase">Account summary</p>
+            <dl className="mt-4 space-y-4 text-sm text-[var(--muted)]">
+              <div>
+                <dt className="font-medium text-stone-950">Member since</dt>
+                <dd className="mt-1">{formatDate(user.createdAt)}</dd>
+              </div>
+              <div>
+                <dt className="font-medium text-stone-950">Session expires</dt>
+                <dd className="mt-1">{formatDate(user.expiresAt)}</dd>
+              </div>
+            </dl>
           </article>
         </section>
       </div>

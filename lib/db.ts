@@ -63,6 +63,7 @@ export type SessionUser = {
   id: number;
   name: string;
   email: string;
+  createdAt: string;
   sessionId: string;
   expiresAt: string;
 };
