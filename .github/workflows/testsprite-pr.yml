@@ -1,0 +1,117 @@
+name: TestSprite PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: testsprite-pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testsprite:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Ensure TestSprite secret is configured
+        env:
+          TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}
+        run: |
+          if [ -z "$TESTSPRITE_API_KEY" ]; then
+            echo "Missing TESTSPRITE_API_KEY repository secret." >&2
+            echo "Add it in Settings > Secrets and variables > Actions before using this workflow." >&2
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
+
+      - name: Start production server
+        run: |
+          PORT=3000 npm run start > next-server.log 2>&1 &
+          echo $! > next-server.pid
+
+      - name: Wait for app health
+        run: |
+          for attempt in {1..60}; do
+            if curl --fail --silent http://127.0.0.1:3000/login > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Next.js server failed to become healthy." >&2
+          cat next-server.log >&2
+          exit 1
+
+      - name: Install cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Create public preview URL
+        id: preview
+        run: |
+          nohup cloudflared tunnel --url http://127.0.0.1:3000 --no-autoupdate > cloudflared.log 2>&1 &
+          echo $! > cloudflared.pid
+          for attempt in {1..60}; do
+            preview_url=$(grep -o 'https://[-a-zA-Z0-9]*\.trycloudflare\.com' cloudflared.log | head -n 1 || true)
+            if [ -n "$preview_url" ]; then
+              echo "url=$preview_url" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Cloudflare tunnel URL was not created." >&2
+          cat cloudflared.log >&2
+          exit 1
+
+      - name: Run TestSprite
+        id: testsprite
+        uses: TestSprite/run-action@v1
+        with:
+          testsprite-api-key: ${{ secrets.TESTSPRITE_API_KEY }}
+          base_url: ${{ steps.preview.outputs.url }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          blocking: 'true'
+
+      - name: Print TestSprite result URL
+        if: always()
+        run: |
+          echo "Preview URL: ${{ steps.preview.outputs.url }}"
+          echo "TestSprite results: ${{ steps.testsprite.outputs.result_url }}"
+
+      - name: Upload debug logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testsprite-debug-logs
+          path: |
+            next-server.log
+            cloudflared.log
+
+      - name: Stop background services
+        if: always()
+        run: |
+          if [ -f cloudflared.pid ]; then
+            kill $(cat cloudflared.pid) || true
+          fi
+          if [ -f next-server.pid ]; then
+            kill $(cat next-server.pid) || true
+          fi

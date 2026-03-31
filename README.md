@@ -33,6 +33,27 @@ npm run lint
 npm run build
 ```
 
+## TestSprite GitHub PR Integration
+
+This repository includes a GitHub Actions workflow at `.github/workflows/testsprite-pr.yml`.
+
+What it does:
+
+- Builds the app on every pull request
+- Starts `next start` on the GitHub Actions runner
+- Exposes the running app through a temporary Cloudflare tunnel
+- Runs the committed `testsprite_tests/` suite with `TestSprite/run-action`
+- Posts the TestSprite result summary back to the pull request
+
+Required repository secret:
+
+- `TESTSPRITE_API_KEY`: create this in the TestSprite web portal, then add it to GitHub under Settings > Secrets and variables > Actions
+
+Notes:
+
+- The workflow only runs for pull requests opened from branches in this repository, not from forks, because GitHub does not expose secrets to forked PRs.
+- If you prefer the TestSprite GitHub App instead of Actions, you still need to connect this repository in the TestSprite web portal and provide a preview deployment source.
+
 ## Notes
 
 - The SQLite database file is ignored by git.
